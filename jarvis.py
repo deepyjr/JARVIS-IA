@@ -5,6 +5,8 @@ import wikipedia
 import smtplib
 import webbrowser as wb
 import os
+import requests
+
 
 
 engine = pyttsx3.init()
@@ -70,6 +72,60 @@ def sendEmail(to,content):
     server.login('assistant.deepyjr@gmail.com', 'Assistant34&*')
     server.sendmail('deepyjr@gmail.com',to,content)
     server.close()
+
+def weather(day):
+
+    dayStr = str(day)
+    url="https://api.meteo-concept.com/api/forecast/daily/"+dayStr+"?token=8c1dde9d98336d26a62f2e8969c794f716c77776fd3d171b431881ea4d6e9252&insee=78123"
+    content=requests.get(url)
+    dataWeather=content.json()
+    return dataWeather
+
+def dailyWeatherCheck(dataWeather):
+    tmin = str(dataWeather['forecast']['tmin'])
+    tmax = str(dataWeather['forecast']['tmax'])
+    rainProb = str(dataWeather['forecast']['probarain'])
+    frostProb = str(dataWeather['forecast']['probafrost'])
+    totalRain = str(dataWeather['forecast']['rr1'])
+
+    if int(tmin) < 15 and int(frostProb):
+        speak("Il fera au minimum"+tmin+"degrés et au maximum"+tmax+"degrés, avec une probabilité de pluie de "+rainProb+"% et un risque de gel de"+frostProb)
+    if int(rainProb)>=50:
+        speak("Il fera au minimum"+tmin+"degrés et au maximum"+tmax+"degrés, avec une probabilité de pluie de "+rainProb+"% il est prévu en tout"+totalRain+"millimètres cumulé sur la journée. Vous devriez penser a prendre un parapluie si vous sortez")
+    else:
+        speak("Il fera au minimum"+tmin+"degrés et au maximum"+tmax+"degrés, avec une probabilité de pluie de "+rainProb+"%")
+
+
+def averageWeather():
+    averageTmin =[]
+    averageTmax = []
+    averageRainProb=[]
+    averageFrostProb=[]
+    
+    for i in range(0,3):
+        i = str(i)
+        url="https://api.meteo-concept.com/api/forecast/daily/"+i+"?token=8c1dde9d98336d26a62f2e8969c794f716c77776fd3d171b431881ea4d6e9252&insee=78123"
+        content=requests.get(url)
+        dataWeather=content.json()
+        tmin = dataWeather['forecast']['tmin']
+        tmax = dataWeather['forecast']['tmax']
+        rainProb = dataWeather['forecast']['probarain']
+        frostProb = dataWeather['forecast']['probafrost']
+        
+        averageTmin.append(tmin)
+        averageTmax.append(tmax)
+        averageRainProb.append(rainProb)
+        averageFrostProb.append(frostProb)
+    
+    averageTmin = str(moyenne(averageTmin))
+    averageTmax = str(moyenne(averageTmax))
+    averageRainProb= str(moyenne(averageRainProb))
+    averageFrostProb= str(moyenne(averageFrostProb))
+        
+    speak("Il fera en moyenne sur les 3 prochains jours au minimum"+averageTmin+" degrés et au maximum"+averageTmax+"degrés. La probabilité d'une pluie est de"+ averageRainProb+"% avec une probabilité de neige de "+averageFrostProb+"%") 
+
+def moyenne(liste):
+    return round(sum(liste)/len(liste))
 
 
 def takeCommand():
@@ -154,7 +210,27 @@ if __name__ == "__main__":
                     else:
                         speak("Votre recherche a échoué redemandez un envoie")
 
-  
+                elif 'météo' in query:
+                    speak("Voulez vous la météo pour aujourd'hui ou pour demain ? Si vous désirez un cumule sur les 3 prochains jours dites moyenne sur 3 jours")
+                    query = takeCommand().lower()
+
+                    if "aujourd'hui" in query:
+                        dailyWeatherCheck(weather(0))
+                        offMod()
+                        break
+
+                    elif "demain" in query:
+                        dailyWeatherCheck(weather(1))
+                        offMod()
+                        break
+
+                    elif "3 jours" in query:
+                        averageWeather()
+                        offMod()
+                        break
+                    else:
+                        speak("Je suis désolé professeur, je n'ai pas compris la date voulue pour la météo, recommencez une demande de météo.")
+
                    
                 elif 'mail' in query:
                     try:
