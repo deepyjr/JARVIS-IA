@@ -6,11 +6,30 @@ import smtplib
 import webbrowser as wb
 import os
 import requests
+import sqlite3
 
 
 
 engine = pyttsx3.init()
 wikipedia.set_lang("fr")
+conn = sqlite3.connect('db_calendar.db')
+c = conn.cursor()
+
+
+
+
+# # Create table
+# c.execute('''CREATE TABLE `calendar` (
+#                     `id` INTEGER PRIMARY KEY AUTOINCREMENT,
+#                     `Date` date NOT NULL,
+#                     `Note` text NOT NULL
+#         )''')
+
+# #generer 700 dates      
+# i = 1
+# while i < 700:
+#     c.execute("INSERT INTO `calendar`(`Date`, `Note`) VALUES (DATE('2020-06-03','+"+str(i)+" day'),'')")
+#     i = i+1
 
 
 def speak(audio):
@@ -20,10 +39,48 @@ def speak(audio):
 def connectedToday(date):
     remember = open('log.txt','r')
     logData = remember.read()
-    if date == logData:
-        speak("Vous revoilà Professeur, vous m'aviez manqué. Que puis-je faire pour vous ?")
-    else:
+    if date != logData:
         wishMe()
+    else:
+        speak("Vous revoilà Professeur, vous m'aviez manqué. Que puis-je faire pour vous ?")
+
+def formatDateSQL(day,month,year):
+    if day < 10:
+        day = '0'+str(day)
+    if month < 10:
+        month = '0'+str(month)
+    date = str(year)+'-'+month+'-'+day
+    return date   
+
+def formatDateLog(day,month):
+    date = str(day)+''+str(month)
+    return date
+
+def addEvent(date,content):
+    content = cleanQuote(content)
+    c.execute("UPDATE `calendar` SET `Note` = '"+content+"' WHERE `Date` = '"+date+"'")
+    conn.commit()
+    conn.close()
+
+def getEvent(date):
+    c.execute("SELECT Note FROM calendar WHERE `Date` = '"+date+"'")
+    result = str(c.fetchall())
+    result = result.replace(',','')
+    result = result.replace('[','')
+    result = result.replace(')','')
+    result = result.replace('(','')
+    result = result.replace(']','')
+    return str(result)
+    conn.commit()
+    conn.close()
+
+
+def cleanQuote(sentence):
+    sentence = sentence.replace("'","")
+    return sentence
+
+
+    
 
 def writeLog(day,month):
     reminder = open('log.txt','w')
@@ -172,17 +229,28 @@ if __name__ == "__main__":
     while True:
         start = startStat().lower()
 
-        if 'ok jarvis' in start:
+        # a delete
 
+
+        if 'ok jarvis' in start:
             # take the date and create a log 
+            year = datetime.datetime.now().year
             month = datetime.datetime.now().month
             day = datetime.datetime.now().day
-            date = writeLog(day, month)
+
+            date = formatDateLog(day,month)
+            todayDateSQL = formatDateSQL(day,month,year)
+            tommorowDateSQL = formatDateSQL(day+1,month,year)
             connectedToday(date)
-
             # wishMe()
-            while True:
 
+            while True:
+                month = datetime.datetime.now().month
+                day = datetime.datetime.now().day
+                date = formatDateLog(day,month)
+
+                date = writeLog(day, month)
+                
                 query = takeCommand().lower()
 
                 if 'heure' in query:
@@ -244,6 +312,8 @@ if __name__ == "__main__":
                             to = 'margaux.le-roux@hotmail.com'
                         elif 'moi' in to or 'raphael' in to:
                             to = 'deepyjr@gmail.com'
+                        elif 'isabelle' or 'mère' in to:
+                            to = 'rocheisabelle6@gmail.com'
 
                         sendEmail(to, content)
                         speak("Votre mail a bien été envoyé Professeur!")
@@ -272,23 +342,56 @@ if __name__ == "__main__":
                     offMod()
                     break
 
-                elif 'enregistre' in query:
+                elif 'enregistre' in query or 'souviens' in query:
                     while True:
                         speak("Que voulez vous que je retiennes pour vous ?")
                         data = takeCommand()
-                        speak("Vous voulez que je note"+data)
+                        speak("Vous voulez que je me souvienne de : "+data)
                         answer = takeCommand().lower()
                         if 'oui' in answer:
-                            remember = open('data.txt','w')
-                            remember.write(data)
-                            remember.close()
-                            offMod()
-                            break
-                            
+                            remember = open('data.txt','r')
+                            speak("Vous voulez que j'efface la note suivante ?"+remember.read())
+                            answer = takeCommand().lower()
+                            if 'oui' in answer:
+                                remember = open('data.txt','w')
+                                remember.write('\n'+data)
+                                remember.close()
+                                offMod()
+                                break
+                            elif 'non' in answer or 'sauvegarde' in answer:
+                                remember = open('data.txt','a')
+                                # remember.write('\n')
+                                remember.write('\n'+data)
+                                remember.close()
+                                offMod()
+                                break
                         else:
                             ("recommencez la mémorisation")
-                    
                     break
+
+                elif 'calendrier' in query:
+                    speak("Voulez vous lire les notes d'un jour ou en ajouter ?")
+                    answer = takeCommand().lower()
+                    if 'lire' in answer:
+                        speak("Pour quelle date ?")
+                        answer = takeCommand().lower()
+                        if "aujourd'hui" in answer:
+                            speak("il est enregistrer"+str(getEvent(todayDateSQL)))
+                        elif"demain":
+                            speak("il est enregistrer"+str(getEvent(tommorowDateSQL)))
+                    elif 'ajouter' in answer:
+                        speak("Que voulez vous que je retiennes pour vous ?")
+                        data = takeCommand()
+                        speak("Vous voulez que je me souvienne de : "+data)
+                        answer = takeCommand().lower()
+                        if 'oui' in answer:
+                            speak("Pour quelle date ?")
+                            answer = takeCommand().lower()
+                            if "aujourd'hui" in answer:
+                                print(todayDateSQL, str(data))
+                                addEvent('2020-06-04',str(data))
+                        else:
+                            ("recommencez la mémorisation")
 
                 elif 'mémoire' in query:
                     remember = open('data.txt','r')
