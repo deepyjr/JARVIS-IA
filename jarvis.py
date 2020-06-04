@@ -16,8 +16,6 @@ conn = sqlite3.connect('db_calendar.db')
 c = conn.cursor()
 
 
-
-
 # # Create table
 # c.execute('''CREATE TABLE `calendar` (
 #                     `id` INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -121,7 +119,32 @@ def wishMe():
     time()
     dateData()
     speak("Jarvisse a votre service. Que puis-je faire pour vous ?")
-
+def convertMonthNumber(month):
+    if month =="janvier":
+        return '01'
+    elif month =="février":
+        return '02'
+    elif month =="mars":
+        return '03'   
+    elif month =="avril":
+        return '04'   
+    elif month =="mai":
+        return '05'   
+    elif month =="juin":
+        return '06'   
+    elif month =="juillet":
+        return '07'   
+    elif month =="aout":
+        return '08'   
+    elif month =="septembre":
+        return '09'   
+    elif month =="octobre":
+        return '10'   
+    elif month =="novembre":
+        return '11'  
+    elif month =="décembre":
+        return '12'   
+     
 def sendEmail(to,content):
     server = smtplib.SMTP('smtp.gmail.com',587)
     server.ehlo()
@@ -373,23 +396,54 @@ if __name__ == "__main__":
                     speak("Voulez vous lire les notes d'un jour ou en ajouter ?")
                     answer = takeCommand().lower()
                     if 'lire' in answer:
-                        speak("Pour quelle date ?")
+                        speak("Pour quelle date ? pour une date précise dites date")
                         answer = takeCommand().lower()
                         if "aujourd'hui" in answer:
                             speak("il est enregistrer"+str(getEvent(todayDateSQL)))
                         elif"demain":
                             speak("il est enregistrer"+str(getEvent(tommorowDateSQL)))
-                    elif 'ajouter' in answer:
+                        else:
+                            speak("Donnez moi votre jour en chiffre seulement")
+                            day = takeCommand().lower()
+                            speak("Donnez moi un mois")
+                            month = takeCommand().lower()
+                            month = convertMonthNumber(month)
+                            speak("Donnez moi une année")
+                            year = takeCommand().lower()
+
+                            date = formatDateSQL(int(day),int(month),int(year))
+                            print(data)
+                            getEvent(date)
+
+                    elif 'ajouter' in answer or 'ajouté' in answer:
                         speak("Que voulez vous que je retiennes pour vous ?")
                         data = takeCommand()
                         speak("Vous voulez que je me souvienne de : "+data)
                         answer = takeCommand().lower()
                         if 'oui' in answer:
-                            speak("Pour quelle date ?")
+                            speak("Pour quelle date ? pour une date précise dites date")
                             answer = takeCommand().lower()
                             if "aujourd'hui" in answer:
                                 print(todayDateSQL, str(data))
-                                addEvent('2020-06-04',str(data))
+                                addEvent(todayDateSQL,str(data))
+                            elif "demain" in answer:
+                                print(todayDateSQL, str(data))
+                                addEvent(tommorowDateSQL,str(data))
+                            else:
+                                speak("Donnez moi votre jour en chiffre seulement")
+                                day = takeCommand().lower()
+                                speak("Donnez moi un mois")
+                                month = takeCommand().lower()
+                                month = convertMonthNumber(month)
+                                speak("Donnez moi une année")
+                                year = takeCommand().lower()
+
+                                date = formatDateSQL(int(day),int(month),int(year))
+                                print(data)
+                                addEvent(date,str(data))
+                                
+
+
                         else:
                             ("recommencez la mémorisation")
 
