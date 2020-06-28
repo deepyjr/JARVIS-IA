@@ -7,6 +7,7 @@ import webbrowser as wb
 import os
 import requests
 import sqlite3
+import requests
 
 
 
@@ -40,14 +41,21 @@ def connectedToday(date):
     if date != logData:
         wishMe()
     else:
-        speak("Vous revoilà Professeur, vous m'aviez manqué. Que puis-je faire pour vous ?")
+        speak("Que puis-je faire pour vous ?")
+
+def requeteCuisine():
+    r = requests.put('http://192.168.1.65/api/relay/0', data = {'value':'2', 'apikey':'2D410D89733D63D7'})
+
+def requeteSalon():
+    r = requests.put('http://192.168.1.16/api/relay/0', data = {'value':'2', 'apikey':'0046B03BD23BD8A5'})
+
 
 def formatDateSQL(day,month,year):
     if day < 10:
         day = '0'+str(day)
     if month < 10:
         month = '0'+str(month)
-    date = str(year)+'-'+month+'-'+day
+    date = str(year)+'-'+str(month)+'-'+str(day)
     return date   
 
 def formatDateLog(day,month):
@@ -77,8 +85,6 @@ def cleanQuote(sentence):
     sentence = sentence.replace("'","")
     return sentence
 
-
-    
 
 def writeLog(day,month):
     reminder = open('log.txt','w')
@@ -266,7 +272,6 @@ if __name__ == "__main__":
             tommorowDateSQL = formatDateSQL(day+1,month,year)
             connectedToday(date)
             # wishMe()
-
             while True:
                 month = datetime.datetime.now().month
                 day = datetime.datetime.now().day
@@ -354,6 +359,19 @@ if __name__ == "__main__":
                     search = takeCommand().lower()
                     wb.get(chromePath).open_new_tab(search+'.com')
                     offMod()
+                    break
+
+                elif 'cuisine' in query:
+                    requeteCuisine()
+                    break
+
+                elif 'salon' in query:
+                    requeteSalon()
+                    break
+                
+                elif 'allume tout' in query:
+                    requeteCuisine()
+                    requeteSalon()
                     break
 
                 elif 'google' in query or 'internet' in query:
