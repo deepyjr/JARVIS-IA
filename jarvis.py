@@ -3,8 +3,8 @@ import datetime
 import speech_recognition as sr
 import wikipedia
 import smtplib
-import webbrowser as wb
-import os
+# import webbrowser as wb
+# import os
 import requests
 import sqlite3
 import requests
@@ -125,6 +125,7 @@ def wishMe():
     time()
     dateData()
     speak("Jarvisse a votre service. Que puis-je faire pour vous ?")
+
 def convertMonthNumber(month):
     if month =="janvier":
         return '01'
@@ -151,13 +152,13 @@ def convertMonthNumber(month):
     elif month =="décembre":
         return '12'   
      
-def sendEmail(to,content):
-    server = smtplib.SMTP('smtp.gmail.com',587)
-    server.ehlo()
-    server.starttls()
-    server.login('assistant.deepyjr@gmail.com', 'Assistant34&*')
-    server.sendmail('deepyjr@gmail.com',to,content)
-    server.close()
+# def sendEmail(to,content):
+#     server = smtplib.SMTP('smtp.gmail.com',587)
+#     server.ehlo()
+#     server.starttls()
+#     server.login('assistant.deepyjr@gmail.com', 'Assistant34&*')
+#     server.sendmail('deepyjr@gmail.com',to,content)
+#     server.close()
 
 def weather(day):
 
@@ -353,13 +354,13 @@ if __name__ == "__main__":
                         speak("L'envoie de votre mail a échoué redemandez un envoie")
 
 
-                elif 'site web' in query:
-                    speak("A quel site voulez vous accéder?")
-                    chromePath = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
-                    search = takeCommand().lower()
-                    wb.get(chromePath).open_new_tab(search+'.com')
-                    offMod()
-                    break
+                # elif 'site web' in query:
+                #     speak("A quel site voulez vous accéder?")
+                #     chromePath = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+                #     search = takeCommand().lower()
+                #     wb.get(chromePath).open_new_tab(search+'.com')
+                #     offMod()
+                #     break
 
                 elif 'cuisine' in query:
                     requeteCuisine()
@@ -374,14 +375,14 @@ if __name__ == "__main__":
                     requeteSalon()
                     break
 
-                elif 'google' in query or 'internet' in query:
-                    speak("Que voulez vous que je cherche sur google?")
-                    chromePath = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
-                    search = takeCommand().lower()
-                    newSearch = search.replace(" ","+")
-                    wb.get(chromePath).open_new_tab("google.com/search?q="+search)
-                    offMod()
-                    break
+                # elif 'google' in query or 'internet' in query:
+                #     speak("Que voulez vous que je cherche sur google?")
+                #     chromePath = 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe %s'
+                #     search = takeCommand().lower()
+                #     newSearch = search.replace(" ","+")
+                #     wb.get(chromePath).open_new_tab("google.com/search?q="+search)
+                #     offMod()
+                #     break
 
                 elif 'enregistre' in query or 'souviens' in query:
                     while True:
@@ -471,17 +472,17 @@ if __name__ == "__main__":
                     offMod()
                     break
 
-                elif 'ferme ma session' in query:
-                    speak("êtes vous sure de vouloir fermer voter session")
-                    answer = takeCommand().lower()
-                    if 'oui' in answer:
-                        goodBye()
-                        os.system("shutdown -l")
+                # elif 'ferme ma session' in query:
+                #     speak("êtes vous sure de vouloir fermer voter session")
+                #     answer = takeCommand().lower()
+                #     if 'oui' in answer:
+                #         goodBye()
+                #         os.system("shutdown -l")
                  
                     
-                elif 'offline' in query or 'rien' in query or 'arrête-toi' in query or 'déconnecte-toi' in query:
-                    goodBye()
-                    quit()
+                # elif 'offline' in query or 'rien' in query or 'arrête-toi' in query or 'déconnecte-toi' in query:
+                #     goodBye()
+                #     quit()
 
                 
 
