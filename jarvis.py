@@ -1,13 +1,12 @@
 import pyttsx3
 import datetime
 import speech_recognition as sr
-import wikipedia
+# import wikipedia
 import smtplib
 # import webbrowser as wb
 # import os
 import requests
-import sqlite3
-import requests
+# import sqlite3
 
 
 
@@ -50,35 +49,35 @@ def requeteSalon():
     r = requests.put('http://192.168.1.16/api/relay/0', data = {'value':'2', 'apikey':'0046B03BD23BD8A5'})
 
 
-def formatDateSQL(day,month,year):
-    if day < 10:
-        day = '0'+str(day)
-    if month < 10:
-        month = '0'+str(month)
-    date = str(year)+'-'+str(month)+'-'+str(day)
-    return date   
+# def formatDateSQL(day,month,year):
+#     if day < 10:
+#         day = '0'+str(day)
+#     if month < 10:
+#         month = '0'+str(month)
+#     date = str(year)+'-'+str(month)+'-'+str(day)
+#     return date   
 
 def formatDateLog(day,month):
     date = str(day)+''+str(month)
     return date
 
-def addEvent(date,content):
-    content = cleanQuote(content)
-    c.execute("UPDATE `calendar` SET `Note` = '"+content+"' WHERE `Date` = '"+date+"'")
-    conn.commit()
-    conn.close()
+# def addEvent(date,content):
+#     content = cleanQuote(content)
+#     c.execute("UPDATE `calendar` SET `Note` = '"+content+"' WHERE `Date` = '"+date+"'")
+#     conn.commit()
+#     conn.close()
 
-def getEvent(date):
-    c.execute("SELECT Note FROM calendar WHERE `Date` = '"+date+"'")
-    result = str(c.fetchall())
-    result = result.replace(',','')
-    result = result.replace('[','')
-    result = result.replace(')','')
-    result = result.replace('(','')
-    result = result.replace(']','')
-    return str(result)
-    conn.commit()
-    conn.close()
+# def getEvent(date):
+#     c.execute("SELECT Note FROM calendar WHERE `Date` = '"+date+"'")
+#     result = str(c.fetchall())
+#     result = result.replace(',','')
+#     result = result.replace('[','')
+#     result = result.replace(')','')
+#     result = result.replace('(','')
+#     result = result.replace(']','')
+#     return str(result)
+#     conn.commit()
+#     conn.close()
 
 
 def cleanQuote(sentence):
@@ -269,8 +268,8 @@ if __name__ == "__main__":
             day = datetime.datetime.now().day
 
             date = formatDateLog(day,month)
-            todayDateSQL = formatDateSQL(day,month,year)
-            tommorowDateSQL = formatDateSQL(day+1,month,year)
+            # todayDateSQL = formatDateSQL(day,month,year)
+            # tommorowDateSQL = formatDateSQL(day+1,month,year)
             connectedToday(date)
             # wishMe()
             while True:
@@ -292,20 +291,20 @@ if __name__ == "__main__":
                     offMod()
                     break
 
-                elif 'wikipédia' in query or 'Wikipédia' in query :
-                    speak("Que dois-je rechercher ? Ne me donnez que le mot clé !")
-                    content = takeCommand()
-                    speak("Vous confirmez que je dois rechercher"+content)
-                    answ = takeCommand().lower()
-                    if 'oui' in answ:
-                        speak("Recherche en cours..")
-                        result = wikipedia.summary(content,sentences=1)
-                        print(result)
-                        speak(result)
-                        offMod()
-                        break
-                    else:
-                        speak("Votre recherche a échoué redemandez un envoie")
+                # elif 'wikipédia' in query or 'Wikipédia' in query :
+                #     speak("Que dois-je rechercher ? Ne me donnez que le mot clé !")
+                #     content = takeCommand()
+                #     speak("Vous confirmez que je dois rechercher"+content)
+                #     answ = takeCommand().lower()
+                #     if 'oui' in answ:
+                #         speak("Recherche en cours..")
+                #         result = wikipedia.summary(content,sentences=1)
+                #         print(result)
+                #         speak(result)
+                #         offMod()
+                #         break
+                #     else:
+                #         speak("Votre recherche a échoué redemandez un envoie")
 
                 elif 'météo' in query:
                     speak("Voulez vous la météo pour aujourd'hui ou pour demain ? Si vous désirez un cumule sur les 3 prochains jours dites moyenne sur 3 jours")
@@ -329,29 +328,29 @@ if __name__ == "__main__":
                         speak("Je suis désolé professeur, je n'ai pas compris la date voulue pour la météo, recommencez une demande de météo.")
 
                    
-                elif 'mail' in query:
-                    try:
-                        speak("Que dois-je envoyer comme contenu ?")
-                        content = takeCommand()
+                # elif 'mail' in query:
+                #     try:
+                #         speak("Que dois-je envoyer comme contenu ?")
+                #         content = takeCommand()
 
-                        speak("A qui dois-je envoyer votre mail ?")
-                        to = takeCommand().lower()
+                #         speak("A qui dois-je envoyer votre mail ?")
+                #         to = takeCommand().lower()
 
-                        if 'margaux' in to or 'margot' in to:
-                            to = 'margaux.le-roux@hotmail.com'
-                        elif 'moi' in to or 'raphael' in to:
-                            to = 'deepyjr@gmail.com'
-                        elif 'isabelle' or 'mère' in to:
-                            to = 'rocheisabelle6@gmail.com'
+                #         if 'margaux' in to or 'margot' in to:
+                #             to = 'margaux.le-roux@hotmail.com'
+                #         elif 'moi' in to or 'raphael' in to:
+                #             to = 'deepyjr@gmail.com'
+                #         elif 'isabelle' or 'mère' in to:
+                #             to = 'rocheisabelle6@gmail.com'
 
-                        sendEmail(to, content)
-                        speak("Votre mail a bien été envoyé Professeur!")
-                        offMod()
-                        break
+                #         sendEmail(to, content)
+                #         speak("Votre mail a bien été envoyé Professeur!")
+                #         offMod()
+                #         break
                     
-                    except Exception as e:
-                        print(e)
-                        speak("L'envoie de votre mail a échoué redemandez un envoie")
+                #     except Exception as e:
+                #         print(e)
+                #         speak("L'envoie de votre mail a échoué redemandez un envoie")
 
 
                 # elif 'site web' in query:
@@ -384,93 +383,93 @@ if __name__ == "__main__":
                 #     offMod()
                 #     break
 
-                elif 'enregistre' in query or 'souviens' in query:
-                    while True:
-                        speak("Que voulez vous que je retiennes pour vous ?")
-                        data = takeCommand()
-                        speak("Vous voulez que je me souvienne de : "+data)
-                        answer = takeCommand().lower()
-                        if 'oui' in answer:
-                            remember = open('data.txt','r')
-                            speak("Vous voulez que j'efface la note suivante ?"+remember.read())
-                            answer = takeCommand().lower()
-                            if 'oui' in answer:
-                                remember = open('data.txt','w')
-                                remember.write('\n'+data)
-                                remember.close()
-                                offMod()
-                                break
-                            elif 'non' in answer or 'sauvegarde' in answer:
-                                remember = open('data.txt','a')
-                                # remember.write('\n')
-                                remember.write('\n'+data)
-                                remember.close()
-                                offMod()
-                                break
-                        else:
-                            ("recommencez la mémorisation")
-                    break
+                # elif 'enregistre' in query or 'souviens' in query:
+                #     while True:
+                #         speak("Que voulez vous que je retiennes pour vous ?")
+                #         data = takeCommand()
+                #         speak("Vous voulez que je me souvienne de : "+data)
+                #         answer = takeCommand().lower()
+                #         if 'oui' in answer:
+                #             remember = open('data.txt','r')
+                #             speak("Vous voulez que j'efface la note suivante ?"+remember.read())
+                #             answer = takeCommand().lower()
+                #             if 'oui' in answer:
+                #                 remember = open('data.txt','w')
+                #                 remember.write('\n'+data)
+                #                 remember.close()
+                #                 offMod()
+                #                 break
+                #             elif 'non' in answer or 'sauvegarde' in answer:
+                #                 remember = open('data.txt','a')
+                #                 # remember.write('\n')
+                #                 remember.write('\n'+data)
+                #                 remember.close()
+                #                 offMod()
+                #                 break
+                #         else:
+                #             ("recommencez la mémorisation")
+                #     break
 
-                elif 'calendrier' in query:
-                    speak("Voulez vous lire les notes d'un jour ou en ajouter ?")
-                    answer = takeCommand().lower()
-                    if 'lire' in answer:
-                        speak("Pour quelle date ? pour une date précise dites date")
-                        answer = takeCommand().lower()
-                        if "aujourd'hui" in answer:
-                            speak("il est enregistrer"+str(getEvent(todayDateSQL)))
-                        elif"demain":
-                            speak("il est enregistrer"+str(getEvent(tommorowDateSQL)))
-                        else:
-                            speak("Donnez moi votre jour en chiffre seulement")
-                            day = takeCommand().lower()
-                            speak("Donnez moi un mois")
-                            month = takeCommand().lower()
-                            month = convertMonthNumber(month)
-                            speak("Donnez moi une année")
-                            year = takeCommand().lower()
+                # elif 'calendrier' in query:
+                #     speak("Voulez vous lire les notes d'un jour ou en ajouter ?")
+                #     answer = takeCommand().lower()
+                #     if 'lire' in answer:
+                #         speak("Pour quelle date ? pour une date précise dites date")
+                #         answer = takeCommand().lower()
+                #         if "aujourd'hui" in answer:
+                #             speak("il est enregistrer"+str(getEvent(todayDateSQL)))
+                #         elif"demain":
+                #             speak("il est enregistrer"+str(getEvent(tommorowDateSQL)))
+                #         else:
+                #             speak("Donnez moi votre jour en chiffre seulement")
+                #             day = takeCommand().lower()
+                #             speak("Donnez moi un mois")
+                #             month = takeCommand().lower()
+                #             month = convertMonthNumber(month)
+                #             speak("Donnez moi une année")
+                #             year = takeCommand().lower()
 
-                            date = formatDateSQL(int(day),int(month),int(year))
-                            print(data)
-                            getEvent(date)
+                #             date = formatDateSQL(int(day),int(month),int(year))
+                #             print(data)
+                #             getEvent(date)
 
-                    elif 'ajouter' in answer or 'ajouté' in answer:
-                        speak("Que voulez vous que je retiennes pour vous ?")
-                        data = takeCommand()
-                        speak("Vous voulez que je me souvienne de : "+data)
-                        answer = takeCommand().lower()
-                        if 'oui' in answer:
-                            speak("Pour quelle date ? pour une date précise dites date")
-                            answer = takeCommand().lower()
-                            if "aujourd'hui" in answer:
-                                print(todayDateSQL, str(data))
-                                addEvent(todayDateSQL,str(data))
-                            elif "demain" in answer:
-                                print(todayDateSQL, str(data))
-                                addEvent(tommorowDateSQL,str(data))
-                            else:
-                                speak("Donnez moi votre jour en chiffre seulement")
-                                day = takeCommand().lower()
-                                speak("Donnez moi un mois")
-                                month = takeCommand().lower()
-                                month = convertMonthNumber(month)
-                                speak("Donnez moi une année")
-                                year = takeCommand().lower()
+                #     elif 'ajouter' in answer or 'ajouté' in answer:
+                #         speak("Que voulez vous que je retiennes pour vous ?")
+                #         data = takeCommand()
+                #         speak("Vous voulez que je me souvienne de : "+data)
+                #         answer = takeCommand().lower()
+                #         if 'oui' in answer:
+                #             speak("Pour quelle date ? pour une date précise dites date")
+                #             answer = takeCommand().lower()
+                #             if "aujourd'hui" in answer:
+                #                 print(todayDateSQL, str(data))
+                #                 addEvent(todayDateSQL,str(data))
+                #             elif "demain" in answer:
+                #                 print(todayDateSQL, str(data))
+                #                 addEvent(tommorowDateSQL,str(data))
+                #             else:
+                #                 speak("Donnez moi votre jour en chiffre seulement")
+                #                 day = takeCommand().lower()
+                #                 speak("Donnez moi un mois")
+                #                 month = takeCommand().lower()
+                #                 month = convertMonthNumber(month)
+                #                 speak("Donnez moi une année")
+                #                 year = takeCommand().lower()
 
-                                date = formatDateSQL(int(day),int(month),int(year))
-                                print(data)
-                                addEvent(date,str(data))
+                #                 date = formatDateSQL(int(day),int(month),int(year))
+                #                 print(data)
+                #                 addEvent(date,str(data))
                                 
 
 
-                        else:
-                            ("recommencez la mémorisation")
+                #         else:
+                #             ("recommencez la mémorisation")
 
-                elif 'mémoire' in query:
-                    remember = open('data.txt','r')
-                    speak("Vous m'avez demander de me souvenir de ca"+remember.read())
-                    offMod()
-                    break
+                # elif 'mémoire' in query:
+                #     remember = open('data.txt','r')
+                #     speak("Vous m'avez demander de me souvenir de ca"+remember.read())
+                #     offMod()
+                #     break
 
                 # elif 'ferme ma session' in query:
                 #     speak("êtes vous sure de vouloir fermer voter session")
