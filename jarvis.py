@@ -155,14 +155,14 @@ def convertMonthNumber(month):
 #     server = smtplib.SMTP('smtp.gmail.com',587)
 #     server.ehlo()
 #     server.starttls()
-#     server.login('assistant.deepyjr@gmail.com', 'Assistant34&*')
+#     server.login('-', '-')
 #     server.sendmail('deepyjr@gmail.com',to,content)
 #     server.close()
 
 def weather(day):
 
     dayStr = str(day)
-    url="https://api.meteo-concept.com/api/forecast/daily/"+dayStr+"?token=8c1dde9d98336d26a62f2e8969c794f716c77776fd3d171b431881ea4d6e9252&insee=78123"
+    url="https://api.meteo-concept.com/api/forecast/daily/"+dayStr+"?token=-&insee=78123"
     content=requests.get(url)
     dataWeather=content.json()
     return dataWeather
